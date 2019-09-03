@@ -3,43 +3,39 @@
 #include <thread>
 #include <chrono>
 using namespace std;
-int var = 1;
-int loop = 100;
 sem_t sem1;
 sem_t sem2;
 sem_t sem3;
 void fun1()
 {
-  while(loop)
+  while(1)
   {
-    //while(var != 1);
-    this_thread::sleep_for(chrono::seconds(1));
-    cout<<"T1 : "<<var<<endl;
-    var = 2;
+     sem_wait(&sem1);
+       cout<<"T1 : "<< "1" <<endl;
+     sem_post(&sem2);
   }
 }
 void fun2()
 {
-  while(loop)
+  while(1)
   {
-    //while(var != 2);
-    cout<<"T2 : "<<var<<endl;
-    var = 3;
+   sem_wait(&sem2);
+    cout<<"T2 : "<< "2" <<endl;
+   sem_post(&sem3);
   }
 }
 void fun3()
-{
-  while(loop)
+{ while(1)
   {
-    //while(var != 3);
-    cout<<"T3 : "<<var<<endl;
-    var = 1;
+   sem_wait(&sem3);
+     cout<<"T3 : "<< "3" <<endl;
+   sem_post(&sem1);
   }
 }
 int main() {
   sem_init(&sem1, 0, 1);
-  sem_init(&sem2, 0, 2);
-  sem_init(&sem3, 0, 3);
+  sem_init(&sem2, 0, 0);
+  sem_init(&sem3, 0, 0);
   thread t1, t2, t3;
   t1 = thread(fun1);
   t2 = thread(fun2);
